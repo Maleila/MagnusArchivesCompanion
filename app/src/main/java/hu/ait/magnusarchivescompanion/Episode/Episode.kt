@@ -10,7 +10,7 @@ data class Episode(
 )
 
 //might not need this
-data class PostWithId(
+data class EpisodeWithId(
     val postId: String,
     val post: Episode
 )

@@ -10,6 +10,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import hu.ait.magnusarchivescompanion.navigation.NavGraph
+import hu.ait.magnusarchivescompanion.ui.screen.episodes.EpisodesScreen
 import hu.ait.magnusarchivescompanion.ui.theme.MagnusArchivesCompanionTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,25 +24,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    NavGraph()
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MagnusArchivesCompanionTheme {
-        Greeting("Android")
     }
 }
