@@ -5,12 +5,12 @@ data class Episode(
     var title: String = "",
     var description: String = "",
     var narrator: String = "",
-    var season: Int = 0,
+    var season: Long = 0,
     var entities: List<String>? = null
 )
 
 //might not need this
 data class EpisodeWithId(
-    val postId: String,
-    val post: Episode
+    val episodeId: String,
+    val episode: Episode
 )

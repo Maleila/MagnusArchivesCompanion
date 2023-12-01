@@ -39,6 +39,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,12 +59,20 @@ fun EpisodesScreen(
     onNavigateToDetailsScreen: (String) -> Unit //idk what exactly it needs to pass... probably an id of some kind?
 ) {
 
-    val episodesList = listOf(Episode("test id", "Test title", "test description", "test narrator", 0,
-        listOf( "test entity")))
+    val episodesList = listOf(
+        Episode(
+            "test id", "Test title", "test description", "test narrator", 0,
+            listOf("test entity")
+        )
+    )
 
     var showSearchDialog by rememberSaveable {
         mutableStateOf(false)
     }
+
+    val episodeListState = episodesViewModel.episodesList().collectAsState(
+        initial = EpisodesScreenUIState.Init
+    )
 
     Scaffold(
         topBar = {
@@ -99,24 +108,25 @@ fun EpisodesScreen(
         }
     ) {
         Column(modifier = Modifier.padding(it)) {
-//            if (postListState.value == MainScreenUIState.Init) {
-//                Text(text = "Init...")
-//            } else if (postListState.value is MainScreenUIState.Success) {
+            if (episodeListState.value == EpisodesScreenUIState.Init) {
+                Text(text = "Init...")
+            } else if (episodeListState.value is EpisodesScreenUIState.Success) {
                 LazyColumn() {
-                    //items((episodesListState.value as EpisodesScreenUIState.Success).postList){
-                    items(episodesList){
-                        EpisodeCard(episode = it,
-                            onCardClicked = {onNavigateToDetailsScreen("test")}) //don't know why it won't let me pass a property of it
-                            //currentUserId = feedScreenViewModel.currentUserId)
+                    items((episodeListState.value as EpisodesScreenUIState.Success).episodesList) {
+                        EpisodeCard(episode = it.episode,
+                            onCardClicked = { onNavigateToDetailsScreen("test") }) //don't know why it won't let me pass a property of it
+                        //currentUserId = feedScreenViewModel.currentUserId)
                     }
                 }
             }
-        if (showSearchDialog) {
-            SearchDialogue(
-                episodesViewModel,
-                { showSearchDialog = false })}
+            if (showSearchDialog) {
+                SearchDialogue(
+                    episodesViewModel,
+                    { showSearchDialog = false })
+            }
         }
     }
+}
 
 @Composable
 fun EpisodeCard(
@@ -168,7 +178,7 @@ fun EpisodeCard(
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun SearchDialogue(
+fun SearchDialogue(
     episodesViewModel: EpisodeViewModel,
     onDialogDismiss: () -> Unit = {}
 ) {
@@ -263,7 +273,8 @@ private fun SearchDialogue(
 fun SpinnerSample(
     list: List<String>,
     preselected: String,
-    onSelectionChanged: (myData: String) -> Unit, modifier: Modifier = Modifier
+    onSelectionChanged: (myData: String) -> Unit,
+    modifier: Modifier = Modifier
 ){
     var selected by remember { mutableStateOf(preselected) }
     var expanded by remember { mutableStateOf(false) } // initial value
