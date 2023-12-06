@@ -56,7 +56,7 @@ import hu.ait.magnusarchivescompanion.Episode.Episode
 @Composable
 fun EpisodesScreen(
     episodesViewModel: EpisodeViewModel = viewModel(),
-    onNavigateToDetailsScreen: (String) -> Unit //idk what exactly it needs to pass... probably an id of some kind?
+    onNavigateToDetailsScreen: (String, String, String, String) -> Unit //idk what exactly it needs to pass... probably an id of some kind?
 ) {
 
 //    val episodesList = listOf(
@@ -132,7 +132,10 @@ fun EpisodesScreen(
                     LazyColumn() {
                         items(episodesViewModel.filter((episodeListState.value as EpisodesScreenUIState.Success).episodesList)) {
                             EpisodeCard(episode = it.episode,
-                                onCardClicked = { onNavigateToDetailsScreen("test") }) //don't know why it won't let me pass a property of it
+                                onCardClicked = { onNavigateToDetailsScreen(it.episode.title,
+                                    it.episode.description,
+                                    it.episode.narrator,
+                                    it.episode.season) }) //don't know why it won't let me pass a property of it
                             //currentUserId = feedScreenViewModel.currentUserId)
                         }
                     }

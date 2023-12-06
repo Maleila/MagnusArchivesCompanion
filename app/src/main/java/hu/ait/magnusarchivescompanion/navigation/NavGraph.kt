@@ -20,18 +20,24 @@ fun NavGraph(
     ) {
         composable(Screen.Main.route) {
             EpisodesScreen(
-                onNavigateToDetailsScreen = { episode ->
-                    navController.navigate("details/$episode")
+                onNavigateToDetailsScreen = { title, description, narrator, season ->
+                    navController.navigate("details/$title/$description/$narrator/$season")
                 },
             )
         }
-        composable("details/{episode}",
+        composable("details/{title}/{description}/{narrator}/{season}",
             arguments = listOf(
-                navArgument("episode") { type = NavType.StringType }
+                navArgument("title") { type = NavType.StringType },
+                navArgument("description") { type = NavType.StringType },
+                navArgument("narrator") { type = NavType.StringType },
+                navArgument("season") { type = NavType.StringType }
             )) {
-            val episode = it.arguments?.getString("episode")
-            if (episode != null) {
-                DetailsScreen(episode)
+            val title = it.arguments?.getString("title")
+            val description = it.arguments?.getString("description")
+            val narrator = it.arguments?.getString("narrator")
+            val season = it.arguments?.getString("season")
+            if (title != null && description != null && narrator != null && season != null) {
+                DetailsScreen(title, description, narrator, season)
             }
         }
     }
