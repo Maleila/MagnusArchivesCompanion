@@ -59,12 +59,12 @@ fun EpisodesScreen(
     onNavigateToDetailsScreen: (String) -> Unit //idk what exactly it needs to pass... probably an id of some kind?
 ) {
 
-    val episodesList = listOf(
-        Episode(
-            "test id", "Test title", "test description", "test narrator", 0,
-            listOf("test entity")
-        )
-    )
+//    val episodesList = listOf(
+//        Episode(
+//            "test id", "Test title", "test description", "test narrator", 0,
+//            listOf("test entity")
+//        )
+//    )
 
     var showSearchDialog by rememberSaveable {
         mutableStateOf(false)
@@ -108,14 +108,33 @@ fun EpisodesScreen(
         }
     ) {
         Column(modifier = Modifier.padding(it)) {
+            if(episodesViewModel.searchParams.narrator != "Any" || episodesViewModel.searchParams.entity != "Any" || episodesViewModel.searchParams.season != "Any") {
+                Text(text = "Filter by: " + episodesViewModel.searchParams.searchList)
+
+                Button(modifier = Modifier.padding(10.dp), onClick = {
+                    episodesViewModel.searchParams.reset()
+                    episodesViewModel.searchParams.updateList()
+
+                    System.out.println(episodesViewModel.searchParams.narrator)
+                    System.out.println(episodesViewModel.searchParams.entity)
+                    System.out.println(episodesViewModel.searchParams.season)
+                }) {
+                    Text(text = "Clear filters") //for some reason this doesn't update the UI... even tho the search params do update
+                }
+            }
+
             if (episodeListState.value == EpisodesScreenUIState.Init) {
                 Text(text = "Init...")
             } else if (episodeListState.value is EpisodesScreenUIState.Success) {
-                LazyColumn() {
-                    items((episodeListState.value as EpisodesScreenUIState.Success).episodesList) {
-                        EpisodeCard(episode = it.episode,
-                            onCardClicked = { onNavigateToDetailsScreen("test") }) //don't know why it won't let me pass a property of it
-                        //currentUserId = feedScreenViewModel.currentUserId)
+                if (episodesViewModel.filter((episodeListState.value as EpisodesScreenUIState.Success).episodesList).size == 0) {
+                    Text(text = "No episodes matching search terms - try another search!")
+                } else {
+                    LazyColumn() {
+                        items(episodesViewModel.filter((episodeListState.value as EpisodesScreenUIState.Success).episodesList)) {
+                            EpisodeCard(episode = it.episode,
+                                onCardClicked = { onNavigateToDetailsScreen("test") }) //don't know why it won't let me pass a property of it
+                            //currentUserId = feedScreenViewModel.currentUserId)
+                        }
                     }
                 }
             }
@@ -168,7 +187,10 @@ fun EpisodeCard(
                         text = episode.narrator,
                     )
                     Text(
-                        text = episode.season.toString(),
+                        text = episode.season,
+                    )
+                    Text( //too lazy to show whole list - just for testing
+                        text = episode.entities!![0],
                     )
                 }
             }
@@ -255,11 +277,16 @@ fun SearchDialogue(
                     .padding(10.dp))
             Row {
                 Button(modifier = Modifier.padding(10.dp), onClick = {
+                    episodesViewModel.searchParams.narrator = narrator
+                    episodesViewModel.searchParams.entity = entity
+                    episodesViewModel.searchParams.season = season
+                    episodesViewModel.searchParams.updateList()
 
-//                        citiesViewModel.addToList(
-//                            city
-                    //search by these parameters
-                        onDialogDismiss()
+                    System.out.println(episodesViewModel.searchParams.narrator)
+                    System.out.println(episodesViewModel.searchParams.entity)
+                    System.out.println(episodesViewModel.searchParams.season)
+
+                    onDialogDismiss()
                 }) {
                     Text(text = "Search")
                 }

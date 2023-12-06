@@ -5,7 +5,8 @@ data class Episode(
     var title: String = "",
     var description: String = "",
     var narrator: String = "",
-    var season: Long = 0,
+    //var season: Long = 0,
+    var season: String = "",
     var entities: List<String>? = null
 )
 
