@@ -17,7 +17,15 @@ import hu.ait.magnusarchivescompanion.ui.screen.episodes.EpisodeViewModel
 import hu.ait.magnusarchivescompanion.ui.screen.episodes.EpisodesScreenUIState
 
 @Composable
-fun DetailsScreen(title: String, description: String, narrator: String, season: String) {
+fun DetailsScreen(
+    title: String, description: String, narrator: String, season: String,
+    detailsViewModel: DetailsViewModel = viewModel()) {
+
+    var episode: Episode
+
+    val episodeListState = detailsViewModel.episodesList().collectAsState(
+        initial = DetailsScreenUIState.Init
+    )
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -25,21 +33,33 @@ fun DetailsScreen(title: String, description: String, narrator: String, season: 
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
 
-        Text(
-            text = title,
-        )
-        Text(
-            text = description,
-        )
-        Text(
-            text = narrator,
-        )
-        Text(
-            text = season,
-        )
-//        Text( //too lazy to show whole list - just for testing
-//            text = entities!![0],
-//        )
+        if (episodeListState.value == DetailsScreenUIState.Init) {
+            Text(text = "Init...")
+        } else {
+            episodeDetails(
+                episode = detailsViewModel.getEpisodeByTitle(
+                    title,
+                    (episodeListState.value as DetailsScreenUIState.Success).episodesList
+                )
+            )
+        }
     }
+
+}
+
+@Composable
+fun episodeDetails(episode: Episode) {
+    Text(
+        text = episode.title,
+    )
+    Text(
+        text = episode.description,
+    )
+    Text(
+        text = episode.narrator,
+    )
+    Text(
+        text = episode.season,
+    )
 
 }

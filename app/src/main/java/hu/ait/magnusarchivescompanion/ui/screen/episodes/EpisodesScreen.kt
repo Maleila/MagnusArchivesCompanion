@@ -59,13 +59,6 @@ fun EpisodesScreen(
     onNavigateToDetailsScreen: (String, String, String, String) -> Unit //idk what exactly it needs to pass... probably an id of some kind?
 ) {
 
-//    val episodesList = listOf(
-//        Episode(
-//            "test id", "Test title", "test description", "test narrator", 0,
-//            listOf("test entity")
-//        )
-//    )
-
     var showSearchDialog by rememberSaveable {
         mutableStateOf(false)
     }
