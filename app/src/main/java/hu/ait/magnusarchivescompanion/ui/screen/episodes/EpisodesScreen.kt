@@ -7,13 +7,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,14 +28,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,10 +42,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImage
 import hu.ait.magnusarchivescompanion.Episode.Episode
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,8 +64,9 @@ fun EpisodesScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("The Magnus Archives Listening Companion") },
+            TopAppBar( //can't figure out how to center the text....
+                title = { Text("The Magnus Archives Listening Companion",
+                    modifier = Modifier.padding(10.dp))},
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor =
                     MaterialTheme.colorScheme.secondaryContainer
@@ -95,7 +91,7 @@ fun EpisodesScreen(
                 Icon(
                     imageVector = Icons.Rounded.Search,
                     contentDescription = "Search",
-                    tint = Color.White,
+                    tint = Color.Black,
                 )
             }
         }
@@ -151,9 +147,9 @@ fun EpisodeCard(
 ) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
         ),
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(10.dp),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 10.dp
         ),
@@ -166,7 +162,7 @@ fun EpisodeCard(
                 .padding(10.dp)
         ) {
             Row(
-                modifier = Modifier.padding(20.dp),
+                modifier = Modifier.padding(top = 20.dp).padding(horizontal = 20.dp).padding(bottom = 5.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
@@ -175,19 +171,40 @@ fun EpisodeCard(
                 ) {
                     Text(
                         text = episode.title,
+                        style = MaterialTheme.typography.titleSmall,
+                        modifier = Modifier.padding(bottom = 8.dp)
                     )
                     Text(
                         text = episode.description,
+                        maxLines = 2, // Display only 2 lines
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(bottom = 8.dp)
                     )
-                    Text(
-                        text = episode.narrator,
-                    )
-                    Text(
-                        text = episode.season,
-                    )
-                    Text( //too lazy to show whole list - just for testing
-                        text = episode.entities!![0],
-                    )
+                    Row {
+                        for(entity in episode.entities!!) {
+                            Button(onClick = { },
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    contentColor = Color.White,
+                                    containerColor = Color.Black // Custom button color
+                                ),
+                                modifier = Modifier.padding(
+                                    end = 8.dp
+                                ),
+                                //enabled = false
+                                ) {
+                                Text(entity)
+                            }
+                        }
+                    }
+//                    Text(
+//                        text = episode.narrator,
+//                    )
+//                    Text(
+//                        text = episode.season,
+//                    )
+//                    Text( //too lazy to show whole list - just for testing
+//                        text = episode.entities!![0],
+//                    )
                 }
             }
         }

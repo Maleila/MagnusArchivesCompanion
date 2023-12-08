@@ -11,7 +11,15 @@ import androidx.compose.ui.unit.sp
 
 // Set of Material typography styles to start with
 val Typography = Typography(
-    bodyLarge = TextStyle(
+    bodyLarge = TextStyle( //seems to be the default - descriptions etc
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.5.sp,
+        color = Color(android.graphics.Color.GRAY)
+    ),
+    bodyMedium = TextStyle( //seems to be the default - descriptions etc
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
@@ -19,22 +27,20 @@ val Typography = Typography(
         letterSpacing = 0.5.sp,
         color = Color(android.graphics.Color.WHITE)
     ),
-    //Other default text styles to override
-    titleLarge = TextStyle(
+    titleLarge = TextStyle( //for app name episode screen
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
+        fontSize = 25.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp,
-        color = Color(android.graphics.Color.GREEN)
+        color = Color(0xFF2f8c24)
     ),
-    labelSmall = TextStyle(
+    titleSmall = TextStyle( //for episode titles on episode screen cards
         fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
         letterSpacing = 0.5.sp,
-        color = Color(android.graphics.Color.WHITE)
+        color = Color(android.graphics.Color.BLACK)
     )
-
 )

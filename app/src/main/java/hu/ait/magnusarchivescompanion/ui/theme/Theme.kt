@@ -20,7 +20,8 @@ private val DarkColorScheme = darkColorScheme(
     background = Black,
     secondary = White,
     tertiary = tmaGreen,
-    secondaryContainer = White
+    secondaryContainer = Black,
+    surfaceVariant = White
 )
 
 private val LightColorScheme = lightColorScheme(

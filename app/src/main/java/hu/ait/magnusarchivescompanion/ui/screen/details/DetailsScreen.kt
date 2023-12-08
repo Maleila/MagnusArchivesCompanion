@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -51,15 +52,19 @@ fun DetailsScreen(
 fun episodeDetails(episode: Episode) {
     Text(
         text = episode.title,
+        style = MaterialTheme.typography.bodyMedium
     )
     Text(
         text = episode.description,
+        style = MaterialTheme.typography.bodyMedium
     )
     Text(
         text = episode.narrator,
+        style = MaterialTheme.typography.bodyMedium
     )
     Text(
         text = episode.season,
+        style = MaterialTheme.typography.bodyMedium
     )
 
 }
