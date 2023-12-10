@@ -1,5 +1,6 @@
 package hu.ait.magnusarchivescompanion.ui.screen.episodes
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -46,13 +48,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import hu.ait.magnusarchivescompanion.Episode.Episode
+import hu.ait.magnusarchivescompanion.Episode.EpisodeWithId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EpisodesScreen(
     episodesViewModel: EpisodeViewModel = viewModel(),
-    onNavigateToDetailsScreen: (String, String, String, String) -> Unit //idk what exactly it needs to pass... probably an id of some kind?
+    onNavigateToDetailsScreen: (String) -> Unit,
+    onReload: () -> Unit
 ) {
+
+    var context = LocalContext.current
 
     var showSearchDialog by rememberSaveable {
         mutableStateOf(false)
@@ -62,23 +68,22 @@ fun EpisodesScreen(
         initial = EpisodesScreenUIState.Init
     )
 
+    var searchParams by remember {
+        mutableStateOf(episodesViewModel.searchParams)
+    }
+
+    var customSearch by remember {mutableStateOf(
+        false
+    )}
+
     Scaffold(
         topBar = {
-            TopAppBar( //can't figure out how to center the text....
-                title = { Text("The Magnus Archives Listening Companion",
-                    modifier = Modifier.padding(10.dp))},
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor =
-                    MaterialTheme.colorScheme.secondaryContainer
-                ),
-                actions = {
-                    IconButton(
-                        onClick = { }
-                    ) {
-                        Icon(Icons.Filled.Info, contentDescription = "Info")
-                    }
+            Column(modifier = Modifier.fillMaxWidth().padding(30.dp),
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("The", style = MaterialTheme.typography.titleMedium)
+                    Text("Magnus Archives", style = MaterialTheme.typography.titleLarge)
+                    Text("Listening Companion", style = MaterialTheme.typography.titleMedium)
                 }
-            )
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -99,21 +104,23 @@ fun EpisodesScreen(
         Column(modifier = Modifier.padding(it)) {
             if(episodesViewModel.searchParams.narrator != "Any" || episodesViewModel.searchParams.entity != "Any" || episodesViewModel.searchParams.season != "Any") {
                 Text(text = "Filter by: " + episodesViewModel.searchParams.searchList)
-
-                Button(modifier = Modifier.padding(10.dp), onClick = {
+                Button(modifier = Modifier.padding(10.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = Color.Black,
+                        containerColor = Color.White
+                    ),
+                    onClick = {
                     episodesViewModel.searchParams.reset()
                     episodesViewModel.searchParams.updateList()
-
-                    System.out.println(episodesViewModel.searchParams.narrator)
-                    System.out.println(episodesViewModel.searchParams.entity)
-                    System.out.println(episodesViewModel.searchParams.season)
+                    episodesViewModel.searchParams.updateList()
+                        onReload()
                 }) {
-                    Text(text = "Clear filters") //for some reason this doesn't update the UI... even tho the search params do update
+                    Text(text = "Clear filters")
                 }
             }
 
             if (episodeListState.value == EpisodesScreenUIState.Init) {
-                Text(text = "Init...")
+                Text(text = "Loading")
             } else if (episodeListState.value is EpisodesScreenUIState.Success) {
                 if (episodesViewModel.filter((episodeListState.value as EpisodesScreenUIState.Success).episodesList).size == 0) {
                     Text(text = "No episodes matching search terms - try another search!")
@@ -121,11 +128,7 @@ fun EpisodesScreen(
                     LazyColumn() {
                         items(episodesViewModel.filter((episodeListState.value as EpisodesScreenUIState.Success).episodesList)) {
                             EpisodeCard(episode = it.episode,
-                                onCardClicked = { onNavigateToDetailsScreen(it.episode.title,
-                                    it.episode.description,
-                                    it.episode.narrator,
-                                    it.episode.season) }) //don't know why it won't let me pass a property of it
-                            //currentUserId = feedScreenViewModel.currentUserId)
+                                onCardClicked = { onNavigateToDetailsScreen(it.episode.title) })
                         }
                     }
                 }
@@ -162,7 +165,10 @@ fun EpisodeCard(
                 .padding(10.dp)
         ) {
             Row(
-                modifier = Modifier.padding(top = 20.dp).padding(horizontal = 20.dp).padding(bottom = 5.dp),
+                modifier = Modifier
+                    .padding(top = 20.dp)
+                    .padding(horizontal = 20.dp)
+                    .padding(bottom = 5.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
@@ -180,31 +186,26 @@ fun EpisodeCard(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
-                    Row {
-                        for(entity in episode.entities!!) {
-                            Button(onClick = { },
-                                colors = ButtonDefaults.outlinedButtonColors(
-                                    contentColor = Color.White,
-                                    containerColor = Color.Black // Custom button color
-                                ),
-                                modifier = Modifier.padding(
-                                    end = 8.dp
-                                ),
-                                //enabled = false
+                    Row { //TODO change this to a lazy row if time
+                        for((buttons, entity) in episode.entities!!.withIndex()) {
+                            if(buttons <= 2) {
+                                Button(onClick = { },
+                                    colors = ButtonDefaults.outlinedButtonColors(
+                                        contentColor = Color.White,
+                                        containerColor = Color.Black
+                                    ),
+                                    modifier = Modifier.padding(
+                                        end = 8.dp
+                                    ),
+                                    //enabled = false
                                 ) {
-                                Text(entity)
+                                    Text(entity,
+                                        maxLines = 1, // Display only 2 lines
+                                        overflow = TextOverflow.Ellipsis,)
+                                }
                             }
                         }
                     }
-//                    Text(
-//                        text = episode.narrator,
-//                    )
-//                    Text(
-//                        text = episode.season,
-//                    )
-//                    Text( //too lazy to show whole list - just for testing
-//                        text = episode.entities!![0],
-//                    )
                 }
             }
         }
@@ -212,12 +213,10 @@ fun EpisodeCard(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun SearchDialogue(
     episodesViewModel: EpisodeViewModel,
     onDialogDismiss: () -> Unit = {}
 ) {
-    var context = LocalContext.current
 
     Dialog(
         onDismissRequest = onDialogDismiss
@@ -255,7 +254,7 @@ fun SearchDialogue(
                     .padding(10.dp))
             Text(text = "Narrator", modifier = Modifier.padding(horizontal = 10.dp))
             SpinnerSample(
-                listOf("Any", "Jon", "Martin", "Gertrude", "Melanie"), //others? double check I forget
+                listOf("Any", "Jon", "Martin", "Gertrude", "Melanie", "Basira", "Other"), //TODO double check I forget
                 preselected = "Any",
                 onSelectionChanged = {
                     narrator = it
@@ -289,16 +288,16 @@ fun SearchDialogue(
                     .fillMaxWidth()
                     .padding(10.dp))
             Row {
-                Button(modifier = Modifier.padding(10.dp), onClick = {
+                Button(modifier = Modifier.padding(10.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = Color.Black,
+                        containerColor = Color.White
+                    ),
+                    onClick = {
                     episodesViewModel.searchParams.narrator = narrator
                     episodesViewModel.searchParams.entity = entity
                     episodesViewModel.searchParams.season = season
                     episodesViewModel.searchParams.updateList()
-
-                    System.out.println(episodesViewModel.searchParams.narrator)
-                    System.out.println(episodesViewModel.searchParams.entity)
-                    System.out.println(episodesViewModel.searchParams.season)
-
                     onDialogDismiss()
                 }) {
                     Text(text = "Search")

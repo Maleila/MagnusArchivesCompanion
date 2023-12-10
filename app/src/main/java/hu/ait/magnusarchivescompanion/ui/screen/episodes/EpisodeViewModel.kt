@@ -46,7 +46,7 @@ class EpisodeViewModel: ViewModel() {
         }
     }
 
-    fun filter(episodesList: List<EpisodeWithId>): MutableList<EpisodeWithId> {
+    fun filter(episodesList: List<EpisodeWithId>): List<EpisodeWithId> {
         var filteredEpisodes: MutableList<EpisodeWithId> = mutableListOf()
 
         for(e in episodesList) {
@@ -59,7 +59,17 @@ class EpisodeViewModel: ViewModel() {
                 }
             }
         }
-        return filteredEpisodes
+        return sortByOrder(filteredEpisodes)
+    }
+}
+
+fun sortByOrder(episodes: MutableList<EpisodeWithId>): List<EpisodeWithId> {
+    return episodes.sortedWith { a, b ->
+        when {
+            a.episode.getEpisodeNumber() > b.episode.getEpisodeNumber() -> 1
+            a.episode.getEpisodeNumber() < b.episode.getEpisodeNumber() -> -1
+            else -> 0
+        }
     }
 }
 
