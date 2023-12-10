@@ -64,7 +64,7 @@ fun episodeDetails(episode: Episode) {
         style = MaterialTheme.typography.titleLarge,
         modifier = Modifier.padding(10.dp)
     )
-    Spacer(modifier = Modifier.fillMaxHeight(0.07f))
+    Spacer(modifier = Modifier.fillMaxHeight(0.04f))
     Text(
         text = "Season " + episode.season,
         style = MaterialTheme.typography.bodyLarge,

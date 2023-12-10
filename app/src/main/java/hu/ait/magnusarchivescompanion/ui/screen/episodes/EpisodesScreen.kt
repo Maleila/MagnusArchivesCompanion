@@ -72,25 +72,29 @@ fun EpisodesScreen(
         mutableStateOf(episodesViewModel.searchParams)
     }
 
-    var customSearch by remember {mutableStateOf(
-        false
-    )}
+    var customSearch by remember {
+        mutableStateOf(
+            false
+        )
+    }
 
     Scaffold(
         topBar = {
-            Column(modifier = Modifier.fillMaxWidth().padding(30.dp),
-                horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("The", style = MaterialTheme.typography.titleMedium)
-                    Text("Magnus Archives", style = MaterialTheme.typography.titleLarge)
-                    Text("Listening Companion", style = MaterialTheme.typography.titleMedium)
-                }
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(40.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("The", style = MaterialTheme.typography.titleMedium)
+                Text("Magnus Archives", style = MaterialTheme.typography.titleLarge)
+                Text("Listening Companion", style = MaterialTheme.typography.titleMedium)
+            }
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
                     showSearchDialog = true
                 },
-                containerColor = MaterialTheme.colorScheme.secondary,
+                containerColor = Color.Gray,
                 shape = RoundedCornerShape(16.dp),
             ) {
                 Icon(
@@ -102,28 +106,31 @@ fun EpisodesScreen(
         }
     ) {
         Column(modifier = Modifier.padding(it)) {
-            if(episodesViewModel.searchParams.narrator != "Any" || episodesViewModel.searchParams.entity != "Any" || episodesViewModel.searchParams.season != "Any") {
-                Text(text = "Filter by: " + episodesViewModel.searchParams.searchList)
-                Button(modifier = Modifier.padding(10.dp),
+            if (episodesViewModel.searchParams.narrator != "Any" || episodesViewModel.searchParams.entity != "Any" || episodesViewModel.searchParams.season != "Any") {
+                Text(text = "Filter by: " + episodesViewModel.searchParams.searchString,
+                    modifier = Modifier.padding(10.dp))
+                Button(modifier = Modifier.padding(horizontal = 10.dp).padding(bottom = 10.dp),
                     colors = ButtonDefaults.outlinedButtonColors(
                         contentColor = Color.Black,
                         containerColor = Color.White
                     ),
                     onClick = {
-                    episodesViewModel.searchParams.reset()
-                    episodesViewModel.searchParams.updateList()
-                    episodesViewModel.searchParams.updateList()
+                        episodesViewModel.searchParams.reset()
+                        episodesViewModel.searchParams.updateList()
+                        episodesViewModel.searchParams.updateList()
                         onReload()
-                }) {
+                    }) {
                     Text(text = "Clear filters")
                 }
             }
 
             if (episodeListState.value == EpisodesScreenUIState.Init) {
-                Text(text = "Loading")
+                Text(text = "Loading",
+                    modifier = Modifier.padding(10.dp))
             } else if (episodeListState.value is EpisodesScreenUIState.Success) {
                 if (episodesViewModel.filter((episodeListState.value as EpisodesScreenUIState.Success).episodesList).size == 0) {
-                    Text(text = "No episodes matching search terms - try another search!")
+                    Text(text = "No episodes matching search terms - try another search!",
+                        modifier = Modifier.padding(10.dp))
                 } else {
                     LazyColumn() {
                         items(episodesViewModel.filter((episodeListState.value as EpisodesScreenUIState.Success).episodesList)) {

@@ -79,9 +79,11 @@ public class Search(narrator: String, entity: String, season: String) {
     var entity: String = entity
     var season: String = season
     var searchList: MutableList<String> = mutableListOf()
+    var searchString: String = ""
 
     fun updateList() {
         searchList.clear()
+        searchString = ""
         if(narrator != "Any") {
             searchList.add(narrator)
         }
@@ -89,7 +91,14 @@ public class Search(narrator: String, entity: String, season: String) {
             searchList.add(entity)
         }
         if(season != "Any") {
-            searchList.add(season)
+            searchList.add("season $season")
+        }
+
+        for(s in searchList) {
+            searchString += "$s, "
+        }
+        if(searchString.length > 0) {
+            searchString = searchString.substring(0, searchString.length-2)
         }
     }
 
