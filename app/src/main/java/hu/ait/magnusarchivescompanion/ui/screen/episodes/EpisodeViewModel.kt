@@ -20,17 +20,12 @@ class EpisodeViewModel: ViewModel() {
             FirebaseFirestore.getInstance().collection(COLLECTION_EPISODES)
                 .addSnapshotListener() { snapshot, e ->
                     val response = if (snapshot != null) {
-                        System.out.println("getting the list")
                         val episodeList = snapshot.toObjects(Episode::class.java)
-                        //System.out.println("num episodes: ${episodesList.size()}")
                         var episodeWithIdList = mutableListOf<EpisodeWithId>()
 
                         episodeList.forEachIndexed { index, episode ->
                             episodeWithIdList.add(EpisodeWithId(snapshot.documents[index].id, episode))
-                            System.out.println("adding: " + episode.title)
                         }
-
-                        System.out.println("num episodes: ${episodeWithIdList.size}")
 
                         EpisodesScreenUIState.Success(
                             episodeWithIdList
@@ -54,7 +49,6 @@ class EpisodeViewModel: ViewModel() {
                 if(e.episode.entities!!.contains(searchParams.entity) || searchParams.entity =="Any") {
                     if(e.episode.season == searchParams.season || searchParams.season == "Any") {
                         filteredEpisodes.add(e)
-                        System.out.println("adding: " + e.episode.title)
                     }
                 }
             }
@@ -73,12 +67,11 @@ fun sortByOrder(episodes: MutableList<EpisodeWithId>): List<EpisodeWithId> {
     }
 }
 
-//to hold search params -- not sure this is the best way to do it
-public class Search(narrator: String, entity: String, season: String) {
+class Search(narrator: String, entity: String, season: String) {
     var narrator: String = narrator
     var entity: String = entity
     var season: String = season
-    var searchList: MutableList<String> = mutableListOf()
+    private var searchList: MutableList<String> = mutableListOf()
     var searchString: String = ""
 
     fun updateList() {

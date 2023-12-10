@@ -1,6 +1,5 @@
 package hu.ait.magnusarchivescompanion.ui.screen.episodes
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,22 +7,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,7 +42,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import hu.ait.magnusarchivescompanion.Episode.Episode
-import hu.ait.magnusarchivescompanion.Episode.EpisodeWithId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,8 +51,6 @@ fun EpisodesScreen(
     onReload: () -> Unit
 ) {
 
-    var context = LocalContext.current
-
     var showSearchDialog by rememberSaveable {
         mutableStateOf(false)
     }
@@ -67,16 +58,6 @@ fun EpisodesScreen(
     val episodeListState = episodesViewModel.episodesList().collectAsState(
         initial = EpisodesScreenUIState.Init
     )
-
-    var searchParams by remember {
-        mutableStateOf(episodesViewModel.searchParams)
-    }
-
-    var customSearch by remember {
-        mutableStateOf(
-            false
-        )
-    }
 
     Scaffold(
         topBar = {
@@ -128,7 +109,9 @@ fun EpisodesScreen(
                 Text(text = "Loading",
                     modifier = Modifier.padding(10.dp))
             } else if (episodeListState.value is EpisodesScreenUIState.Success) {
-                if (episodesViewModel.filter((episodeListState.value as EpisodesScreenUIState.Success).episodesList).size == 0) {
+                if (episodesViewModel.filter((episodeListState.value as EpisodesScreenUIState.Success).episodesList)
+                        .isEmpty()
+                ) {
                     Text(text = "No episodes matching search terms - try another search!",
                         modifier = Modifier.padding(10.dp))
                 } else {
@@ -153,7 +136,6 @@ fun EpisodesScreen(
 fun EpisodeCard(
     episode: Episode,
     onCardClicked: () -> Unit = {}
-    //currentUserId: String = "" //probably don't need this
 ) {
     Card(
         colors = CardDefaults.cardColors(
@@ -189,7 +171,7 @@ fun EpisodeCard(
                     )
                     Text(
                         text = episode.description,
-                        maxLines = 2, // Display only 2 lines
+                        maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
@@ -204,10 +186,9 @@ fun EpisodeCard(
                                     modifier = Modifier.padding(
                                         end = 8.dp
                                     ),
-                                    //enabled = false
                                 ) {
                                     Text(entity,
-                                        maxLines = 1, // Display only 2 lines
+                                        maxLines = 1,
                                         overflow = TextOverflow.Ellipsis,)
                                 }
                             }
@@ -323,7 +304,7 @@ fun SpinnerSample(
     modifier: Modifier = Modifier
 ){
     var selected by remember { mutableStateOf(preselected) }
-    var expanded by remember { mutableStateOf(false) } // initial value
+    var expanded by remember { mutableStateOf(false) }
     OutlinedCard(
         modifier = modifier.clickable {
             expanded = !expanded
