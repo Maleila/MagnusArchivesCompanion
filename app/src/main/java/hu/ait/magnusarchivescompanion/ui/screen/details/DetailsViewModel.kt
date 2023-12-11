@@ -5,7 +5,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import hu.ait.magnusarchivescompanion.Episode.Episode
 import hu.ait.magnusarchivescompanion.Episode.EpisodeWithId
 import hu.ait.magnusarchivescompanion.ui.screen.episodes.EpisodeViewModel
-import hu.ait.magnusarchivescompanion.ui.screen.episodes.EpisodesScreenUIState
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 
@@ -20,9 +19,7 @@ class DetailsViewModel: ViewModel() {
             FirebaseFirestore.getInstance().collection(EpisodeViewModel.COLLECTION_EPISODES)
                 .addSnapshotListener() { snapshot, e ->
                     val response = if (snapshot != null) {
-                        System.out.println("getting the list")
                         val episodeList = snapshot.toObjects(Episode::class.java)
-                        //System.out.println("num episodes: ${episodesList.size()}")
                         var episodeWithIdList = mutableListOf<EpisodeWithId>()
 
                         episodeList.forEachIndexed { index, episode ->
@@ -32,10 +29,7 @@ class DetailsViewModel: ViewModel() {
                                     episode
                                 )
                             )
-                            System.out.println("adding: " + episode.title)
                         }
-
-                        System.out.println("num episodes: ${episodeWithIdList.size}")
 
                         DetailsScreenUIState.Success(
                             episodeWithIdList
@@ -44,7 +38,7 @@ class DetailsViewModel: ViewModel() {
                         DetailsScreenUIState.Error(e?.message.toString())
                     }
 
-                    trySend(response) // emit this value through the flow
+                    trySend(response)
                 }
         awaitClose {
             snapshotListener.remove()

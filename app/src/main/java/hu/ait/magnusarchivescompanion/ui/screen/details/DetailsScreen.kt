@@ -4,13 +4,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -21,12 +18,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import hu.ait.magnusarchivescompanion.Episode.Episode
-import hu.ait.magnusarchivescompanion.ui.screen.episodes.EpisodeViewModel
-import hu.ait.magnusarchivescompanion.ui.screen.episodes.EpisodesScreenUIState
+import hu.ait.magnusarchivescompanion.R
 
 @Composable
 fun DetailsScreen(
@@ -44,7 +39,7 @@ fun DetailsScreen(
         horizontalAlignment = Alignment.Start) {
 
         if (episodeListState.value == DetailsScreenUIState.Init) {
-            Text(text = "Init...")
+            Text(text = stringResource(R.string.loading_message))
         } else {
             episodeDetails(
                 episode = detailsViewModel.getEpisodeByTitle(
@@ -66,7 +61,7 @@ fun episodeDetails(episode: Episode) {
     )
     Spacer(modifier = Modifier.fillMaxHeight(0.04f))
     Text(
-        text = "Season " + episode.season,
+        text = stringResource(R.string.season_txt) + episode.season,
         style = MaterialTheme.typography.bodyLarge,
         modifier = Modifier.padding(10.dp)
     )
@@ -76,7 +71,7 @@ fun episodeDetails(episode: Episode) {
         modifier = Modifier.padding(10.dp)
     )
     Text(
-        text = "Narrated by " + episode.narrator,
+        text = stringResource(R.string.narrated_by) + episode.narrator,
         style = MaterialTheme.typography.bodyLarge,
         modifier = Modifier.padding(10.dp)
     )

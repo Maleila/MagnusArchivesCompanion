@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">MagnusArchivesCompanion</string>
+    <string name="loading_message">Loading…</string>
+    <string name="season_txt">"Season "</string>
+    <string name="narrated_by">"Narrated by "</string>
+    <string name="the_title">The</string>
+    <string name="tma_title">Magnus Archives</string>
+    <string name="subtitle_title">Listening Companion</string>
+    <string name="content_description_search">Search</string>
+    <string name="clear_filters_btn">Clear filters</string>
+    <string name="no_results_text">No episodes matching search terms - try another search!</string>
+    <string name="season_dropdown_label">Season</string>
+    <string name="narrator_dropdown_label">Narrator</string>
+    <string name="entity_dropdown_label">Entity</string>
+    <string name="search_btn">Search</string>
 </resources>

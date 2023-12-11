@@ -37,11 +37,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import hu.ait.magnusarchivescompanion.Episode.Episode
+import hu.ait.magnusarchivescompanion.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,12 +63,14 @@ fun EpisodesScreen(
     Scaffold(
         topBar = {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(40.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(40.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("The", style = MaterialTheme.typography.titleMedium)
-                Text("Magnus Archives", style = MaterialTheme.typography.titleLarge)
-                Text("Listening Companion", style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.the_title), style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.tma_title), style = MaterialTheme.typography.titleLarge)
+                Text(stringResource(R.string.subtitle_title), style = MaterialTheme.typography.titleMedium)
             }
         },
         floatingActionButton = {
@@ -80,7 +83,7 @@ fun EpisodesScreen(
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Search,
-                    contentDescription = "Search",
+                    contentDescription = stringResource(R.string.content_description_search),
                     tint = Color.Black,
                 )
             }
@@ -90,7 +93,9 @@ fun EpisodesScreen(
             if (episodesViewModel.searchParams.narrator != "Any" || episodesViewModel.searchParams.entity != "Any" || episodesViewModel.searchParams.season != "Any") {
                 Text(text = "Filter by: " + episodesViewModel.searchParams.searchString,
                     modifier = Modifier.padding(10.dp))
-                Button(modifier = Modifier.padding(horizontal = 10.dp).padding(bottom = 10.dp),
+                Button(modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .padding(bottom = 10.dp),
                     colors = ButtonDefaults.outlinedButtonColors(
                         contentColor = Color.Black,
                         containerColor = Color.White
@@ -101,18 +106,18 @@ fun EpisodesScreen(
                         episodesViewModel.searchParams.updateList()
                         onReload()
                     }) {
-                    Text(text = "Clear filters")
+                    Text(text = stringResource(R.string.clear_filters_btn))
                 }
             }
 
             if (episodeListState.value == EpisodesScreenUIState.Init) {
-                Text(text = "Loading",
+                Text(text = stringResource(R.string.loading_message),
                     modifier = Modifier.padding(10.dp))
             } else if (episodeListState.value is EpisodesScreenUIState.Success) {
                 if (episodesViewModel.filter((episodeListState.value as EpisodesScreenUIState.Success).episodesList)
                         .isEmpty()
                 ) {
-                    Text(text = "No episodes matching search terms - try another search!",
+                    Text(text = stringResource(R.string.no_results_text),
                         modifier = Modifier.padding(10.dp))
                 } else {
                     LazyColumn() {
@@ -175,7 +180,7 @@ fun EpisodeCard(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
-                    Row { //TODO change this to a lazy row if time
+                    Row {
                         for((buttons, entity) in episode.entities!!.withIndex()) {
                             if(buttons <= 2) {
                                 Button(onClick = { },
@@ -230,7 +235,7 @@ fun SearchDialogue(
                 )
                 .padding(10.dp)
         ) {
-            Text(text = "Season", modifier = Modifier.padding(horizontal = 10.dp))
+            Text(text = stringResource(R.string.season_dropdown_label), modifier = Modifier.padding(horizontal = 10.dp))
             SpinnerSample(
                 listOf("Any", "1", "2", "3", "4", "5"),
                 preselected = "Any",
@@ -240,9 +245,9 @@ fun SearchDialogue(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp))
-            Text(text = "Narrator", modifier = Modifier.padding(horizontal = 10.dp))
+            Text(text = stringResource(R.string.narrator_dropdown_label), modifier = Modifier.padding(horizontal = 10.dp))
             SpinnerSample(
-                listOf("Any", "Jon", "Martin", "Gertrude", "Melanie", "Basira", "Other"), //TODO double check I forget
+                listOf("Any", "Jon", "Martin", "Gertrude", "Melanie", "Basira", "Other"),
                 preselected = "Any",
                 onSelectionChanged = {
                     narrator = it
@@ -250,7 +255,7 @@ fun SearchDialogue(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp))
-            Text(text = "Entity", modifier = Modifier.padding(horizontal = 10.dp))
+            Text(text = stringResource(R.string.entity_dropdown_label), modifier = Modifier.padding(horizontal = 10.dp))
             SpinnerSample(
                 listOf("Any",
                     "The Buried",
@@ -288,7 +293,7 @@ fun SearchDialogue(
                     episodesViewModel.searchParams.updateList()
                     onDialogDismiss()
                 }) {
-                    Text(text = "Search")
+                    Text(text = stringResource(R.string.search_btn))
                 }
 
             }

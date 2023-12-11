@@ -57,6 +57,7 @@ class EpisodeViewModel: ViewModel() {
     }
 }
 
+//not automatically sorted when it gets the full list from firebase, so sort by episode order
 fun sortByOrder(episodes: MutableList<EpisodeWithId>): List<EpisodeWithId> {
     return episodes.sortedWith { a, b ->
         when {
